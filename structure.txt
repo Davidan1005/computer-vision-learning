@@ -1,0 +1,11 @@
+make game window and place a ball in the middle
+start collecting hand input from screen
+uodate ball position 
+redraw fram with updated position
+It is that simple
+
+new idea:
+open camera
+open pygame window
+read from the screen and return a value
+use value to update ball position
