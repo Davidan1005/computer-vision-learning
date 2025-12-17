@@ -13,12 +13,15 @@ class Movement_game():
         self.screen = pygame.display.set_mode((1280, 720))
 
         self.running = True
+        # self.player_pos = pygame.Vector2(
+        #     self.screen.get_width()/2, self.screen.get_height()/2)
+
         self.player_pos = pygame.Vector2(
-            self.screen.get_width()/2, self.screen.get_height()/2)
+           0, 0)
         self.displacement = 10
         self.cap = 0
-        self.displacementx =0
-        self.displacementy = 0
+        self.positionx =0
+        self.positiony = 0
         
 
     def keyboard_control(self):
@@ -77,17 +80,15 @@ class Movement_game():
                             mp_drawing_styles.get_default_hand_landmarks_style(),
                             mp_drawing_styles.get_default_hand_connections_style())
                 
-                    currentx = results.multi_hand_landmarks[0].landmark[8].x
-                    currenty = results.multi_hand_landmarks[0].landmark[8].y
+                    self.positionx = results.multi_hand_landmarks[0].landmark[8].x*1280
+                    self.positiony = results.multi_hand_landmarks[0].landmark[8].y*740
                     currentz = results.multi_hand_landmarks[0].landmark[8].z
 
-                    self.displacementx = (currentx-previousx)*1280
-                    self.displacementy = (currenty-previousy)*740
-                    print(self.displacementx)
-                    print(self.displacementy)
+        
+                    print(self.positionx)
+                    print(self.positiony)
 
-                    previousx = currentx
-                    previousy = currenty
+                    
 
                 # Flip the image horizontally for a selfie-view display.
                 cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
@@ -104,25 +105,25 @@ class Movement_game():
         clock = pygame.time.Clock()
 
         while self.running:
+            
+            self.player_pos.x = 1280 - self.positionx
+            self.player_pos.y = self.positiony
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
 
-                self.screen.fill("purple")
+            self.screen.fill("purple")
 
-                self.player_pos.x += self.displacementx
-                self.player_pos.y += self.displacementy
-
-                pygame.draw.circle(self.screen, "red", self.player_pos, 20)
+            pygame.draw.circle(self.screen, "red", self.player_pos, 20)
                 
-                self.keyboard_control()
+            self.keyboard_control()
                 # if self.cap.isOpened():
                 #     self.gesture_control()
 
-                pygame.display.flip()
+            pygame.display.flip()
 
-                clock.tick(30)
+            clock.tick(30)
 
         pygame.quit()
 
