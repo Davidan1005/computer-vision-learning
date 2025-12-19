@@ -6,7 +6,7 @@ import pygame
 import threading
 
 
-class Movement_game():
+class MovementGame():
 
     def __init__(self):
         pygame.init()
@@ -22,6 +22,13 @@ class Movement_game():
         self.cap = 0
         self.positionx =0
         self.positiony = 0
+
+        self.mp_drawing = mp.solutions.drawing_utils
+        self.mp_drawing_styles = mp.solutions.drawing_styles
+        self.mp_hands = mp.solutions.hands
+
+        self.lock = threading.Lock()
+
         
 
     def keyboard_control(self):
@@ -38,13 +45,10 @@ class Movement_game():
 
     def gesture_control(self):
 
-        mp_drawing = mp.solutions.drawing_utils
-        mp_drawing_styles = mp.solutions.drawing_styles
-        mp_hands = mp.solutions.hands
-
+        
         # For webcam input:
         self.cap = cv2.VideoCapture(0)
-        with mp_hands.Hands(
+        with self.mp_hands.Hands(
                 model_complexity=0,
                 min_detection_confidence=0.5,
                 min_tracking_confidence=0.5) as hands:
@@ -76,13 +80,10 @@ class Movement_game():
                     #         mp_drawing_styles.get_default_hand_landmarks_style(),
                     #         mp_drawing_styles.get_default_hand_connections_style())
                 
-                    self.positionx = results.multi_hand_landmarks[0].landmark[8].x*1280
-                    self.positiony = results.multi_hand_landmarks[0].landmark[8].y*740
-                    
+                    with self.lock:
+                        self.positionx = results.multi_hand_landmarks[0].landmark[8].x*1280
+                        self.positiony = results.multi_hand_landmarks[0].landmark[8].y*720
 
-        
-                    print(self.positionx)
-                    print(self.positiony)
 
                     
 
@@ -102,8 +103,9 @@ class Movement_game():
 
         while self.running:
             
-            self.player_pos.x = 1280 - self.positionx
-            self.player_pos.y = self.positiony
+            with self.lock:
+                self.player_pos.x = 1280 - self.positionx
+                self.player_pos.y = self.positiony
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -124,5 +126,5 @@ class Movement_game():
         pygame.quit()
 
 
-game = Movement_game()
+game = MovementGame()
 game.game_loop()
