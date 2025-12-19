@@ -13,11 +13,11 @@ class Movement_game():
         self.screen = pygame.display.set_mode((1280, 720))
 
         self.running = True
-        # self.player_pos = pygame.Vector2(
-        #     self.screen.get_width()/2, self.screen.get_height()/2)
-
         self.player_pos = pygame.Vector2(
-           0, 0)
+            self.screen.get_width()/2, self.screen.get_height()/2)
+
+        # self.player_pos = pygame.Vector2(
+        #    0, 0)
         self.displacement = 10
         self.cap = 0
         self.positionx =0
@@ -41,10 +41,6 @@ class Movement_game():
         mp_drawing = mp.solutions.drawing_utils
         mp_drawing_styles = mp.solutions.drawing_styles
         mp_hands = mp.solutions.hands
-
-        previousx = 0
-        previousy = 0
-        previousz = 0
 
         # For webcam input:
         self.cap = cv2.VideoCapture(0)
@@ -71,18 +67,18 @@ class Movement_game():
 
                 if results.multi_hand_landmarks:
 
-                    for hand_landmarks in results.multi_hand_landmarks:
+                    # for hand_landmarks in results.multi_hand_landmarks:
 
-                        mp_drawing.draw_landmarks(
-                            image,
-                            hand_landmarks,
-                            mp_hands.HAND_CONNECTIONS,
-                            mp_drawing_styles.get_default_hand_landmarks_style(),
-                            mp_drawing_styles.get_default_hand_connections_style())
+                    #     mp_drawing.draw_landmarks(
+                    #         image,
+                    #         hand_landmarks,
+                    #         mp_hands.HAND_CONNECTIONS,
+                    #         mp_drawing_styles.get_default_hand_landmarks_style(),
+                    #         mp_drawing_styles.get_default_hand_connections_style())
                 
                     self.positionx = results.multi_hand_landmarks[0].landmark[8].x*1280
                     self.positiony = results.multi_hand_landmarks[0].landmark[8].y*740
-                    currentz = results.multi_hand_landmarks[0].landmark[8].z
+                    
 
         
                     print(self.positionx)
@@ -91,9 +87,9 @@ class Movement_game():
                     
 
                 # Flip the image horizontally for a selfie-view display.
-                cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
-                if cv2.waitKey(5) & 0xFF == 27:
-                    break
+                # cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
+                # if cv2.waitKey(5) & 0xFF == 27:
+                #     break
         self.cap.release()
 
     def game_loop(self):
@@ -123,7 +119,7 @@ class Movement_game():
 
             pygame.display.flip()
 
-            clock.tick(30)
+            clock.tick(60)
 
         pygame.quit()
 
